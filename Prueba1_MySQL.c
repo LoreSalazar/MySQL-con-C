@@ -14,13 +14,26 @@ void ejecutar_consulta(MYSQL *conexion, char *consulta);
 int main(){
 	
 	int error;
-	char *consulta;
+	char consulta[200];
 	MYSQL *conexion; //Propio de MYSQL. Permite realizar la conexión
+	
+	char id[100]; //ID que se la pedirá al usuario (filtro por usuario)
 	
 	error = conectar(&conexion); 
 	
 	if(!error){
-		consulta = "SELECT *FROM usuarios";
+		
+		printf("Ingresar el nombre del usuario: ");
+		gets(id);
+		
+		//sprintf(consulta, "SELECT *FROM usuarios WHERE id=%s", id); //Filtro por id de usuario
+		
+		/*-------------------------- FILTRO POR NOMBRE --------------------------*/	
+		strcat(consulta, "SELECT * FROM usuarios WHERE nombre LIKE '%"); //damos autorización para que el usuario ingrese el nombre que el quiera
+		strcat(consulta, id); //Se concatena el id elegido
+		strcat(consulta, "%'");
+		/*-----------------------------------------------------------------------*/
+		
 		ejecutar_consulta(conexion, consulta);
 		mysql_close(conexion); //IMPORTANTE: Cerrar la sesión de MYSQL porque consume recursos del sistema operativo
 	}
